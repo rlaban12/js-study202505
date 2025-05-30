@@ -1,18 +1,21 @@
 // 약수구하기 -? 5월 29일 기준 내일 해설 예정
 // alert은 마지막에 한번만 쓰기
-let positiveInteger = prompt("양의 정수를 입력하세요.");
-let piCount = parseInt(positiveInteger);
-let result = '';
 
-for (let i = 0; i < piCount; i++) {
-  if (piCount % i === 0) {
-    result += i.toString()  + ' '
-  }
+let number = +prompt('양의 정수를 입력하세요.');
 
+if (isNaN(number)) {
+  alert('숫자만 입력하세요!');
 }
 
-alert(result);
+else if (number <= 0) {
+  alert('1 이상의 양수만 입력하세요!');
+}
 
-// 약수 구하기2
+let resultText = '';
+for (let i = 1; i < number; i *= 2) {
+  resultText += `${i} `;
+}
+
+alert(resultText);
 
 
