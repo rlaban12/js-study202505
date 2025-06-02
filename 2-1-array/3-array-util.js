@@ -1,9 +1,5 @@
 let foods = ['닭꼬치', '볶음밥', '족발', '파스타'];
 
-
-
-
-
 // indexOf() : 배열의 특정 요소가 몇번 인덱스에 있는지 알려줌.
 let idx = foods.indexOf('볶음밥');
 console.log(`idx: ${idx}`);

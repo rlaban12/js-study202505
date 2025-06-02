@@ -47,54 +47,45 @@ password.splice(0, 0, userInfo.userList[0].password, userInfo.userList[1].passwo
 let userName = [];
 userName.splice(0, 0, userInfo.userList[0].username, userInfo.userList[1].username, userInfo.userList[2].username);
 
+
 while (true) {
   let inputId = prompt(`계정을 입력하세요!`);
   if (inputId === account[0]) {
     let inputPw = prompt(`비밀번호를 입력하세요!`);
     if (inputPw === password[0]) {
       alert(`${userName[0]}님 로그인 성공!`);
-    } else if (inputPw === password[1]) {
-      let inputPw = prompt(`비밀번호를 입력하세요!`);
-      if (inputPw === password[1]) {
-        alert(`${userName[1]}님 로그인 성공!`);
-      }
-    } else if (inputPw === password[2]) {
-
-    } else {
+      break;
+    }
+    else {
       alert(`비밀번호가 틀렸습니다!`);
     }
 
-  } else if (id === account[1]) {
-
-  } else if (id === account[2]) {
-
-  } else {
+  }
+  else if (inputId === account[1]) {
+    let inputPw = prompt(`비밀번호를 입력하세요!`);
+    if (inputPw === password[1]) {
+      alert(`${userName[1]}님 로그인 성공!`);
+      break;
+    }
+    else {
+      alert(`비밀번호가 틀렸습니다!`);
+    }
+  }
+  else if (inputId === account[2]) {
+    let inputPw = prompt(`비밀번호를 입력하세요!`);
+    if (inputPw === password[2]) {
+      alert(`${userName[2]}님 로그인 성공!`);
+      break;
+    }
+    else {
+      alert(`비밀번호가 틀렸습니다!`);
+    }
+  }
+  else {
     alert(`회원가입부터 하세요!`);
   }
 
-
-  if (true) {
-    break;
-  }
-
 }
-
-// Userinfo에서 id 조회 -> for문 쓰니 계속 반복이 안되서
-// for (let i = 0; i < userInfo.userList.length; i++) {
-//   if(id === userInfo.userList[i].account) {
-//     let password = prompt(`비밀번호를 입력하세요!`);
-//     if(password === userInfo.userList[i].password) {
-//       alert(`${userInfo.userList[i].username}님 로그인 성공!`);
-//       break;
-//     } else {
-//       alert(`비밀번호가 틀렸습니다!`);
-//     }
-//
-//   } else {
-//     alert(`회원가입부터 하세요!`);
-//   }
-// }
-
 
 // 2025-06-2 기준 수요일에 선생님 해설 예정
 
