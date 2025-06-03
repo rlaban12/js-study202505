@@ -33,56 +33,81 @@ let userInfo = {
       password: 'hhh1234',
       username: '홍길동',
     },
+    {
+      account: 'sira123',
+      password: 'sss5678',
+      username: '시라소니',
+    },
 
   ],
 };
 
-// userInfo의 객체 값을 배열에 저장
+// userInfo의 객체 값을 배열에 유기적으로 저장
 let account = [];
-account.splice(0, 0, userInfo.userList[0].account, userInfo.userList[1].account, userInfo.userList[2].account);
-
 let password = [];
-password.splice(0, 0, userInfo.userList[0].password, userInfo.userList[1].password, userInfo.userList[2].password)
-
 let userName = [];
-userName.splice(0, 0, userInfo.userList[0].username, userInfo.userList[1].username, userInfo.userList[2].username);
+let stop = false;
 
+for (let i = 0; i < userInfo.userList.length; i++) {
+  account.splice(i, 0, userInfo.userList[i].account);
+  password.splice(i, 0, userInfo.userList[i].password);
+  userName.splice(i, 0, userInfo.userList[i].username);
+}
 
-while (true) {
+while (!stop) {
   let inputId = prompt(`계정을 입력하세요!`);
-  if (inputId === account[0]) {
-    let inputPw = prompt(`비밀번호를 입력하세요!`);
-    if (inputPw === password[0]) {
-      alert(`${userName[0]}님 로그인 성공!`);
-      break;
-    }
-    else {
-      alert(`비밀번호가 틀렸습니다!`);
-    }
 
-  }
-  else if (inputId === account[1]) {
-    let inputPw = prompt(`비밀번호를 입력하세요!`);
-    if (inputPw === password[1]) {
-      alert(`${userName[1]}님 로그인 성공!`);
-      break;
+  // if (inputId === account[0]) {
+  //   let inputPw = prompt(`비밀번호를 입력하세요!`);
+  //   if (inputPw === password[0]) {
+  //     alert(`${userName[0]}님 로그인 성공!`);
+  //     break;
+  //   }
+  //   else {
+  //     alert(`비밀번호가 틀렸습니다!`);
+  //   }
+  //
+  // }
+  // else if (inputId === account[1]) {
+  //   let inputPw = prompt(`비밀번호를 입력하세요!`);
+  //   if (inputPw === password[1]) {
+  //     alert(`${userName[1]}님 로그인 성공!`);
+  //     break;
+  //   }
+  //   else {
+  //     alert(`비밀번호가 틀렸습니다!`);
+  //   }
+  // }
+  // else if (inputId === account[2]) {
+  //   let inputPw = prompt(`비밀번호를 입력하세요!`);
+  //   if (inputPw === password[2]) {
+  //     alert(`${userName[2]}님 로그인 성공!`);
+  //     break;
+  //   }
+  //   else {
+  //     alert(`비밀번호가 틀렸습니다!`);
+  //   }
+  // }
+  // else {
+  //   alert(`회원가입부터 하세요!`);
+  // }
+
+  // 반복 구간 for 문 쓰기
+  for (let i = 0; i < userInfo.userList.length; i++) {
+    if (inputId === account[i]) {
+      let inputPw = prompt(`비밀번호를 입력하세요!`);
+      if (inputPw === password[i]) {
+        alert(`${userName[i]}님 로그인 성공!`);
+        stop = true;
+        break;
+      }
+      else {
+        alert(`비밀번호가 틀렸습니다!`);
+      }
     }
     else {
-      alert(`비밀번호가 틀렸습니다!`);
+      alert(`회원가입부터 하세요!`);
     }
-  }
-  else if (inputId === account[2]) {
-    let inputPw = prompt(`비밀번호를 입력하세요!`);
-    if (inputPw === password[2]) {
-      alert(`${userName[2]}님 로그인 성공!`);
-      break;
-    }
-    else {
-      alert(`비밀번호가 틀렸습니다!`);
-    }
-  }
-  else {
-    alert(`회원가입부터 하세요!`);
   }
 
 }
