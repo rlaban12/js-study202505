@@ -67,9 +67,21 @@ const result2 = every(user => user.hobbies.length > 0); // true
 console.log(result2);
 
 // 문제 2 some() 직접 구현하기
+console.log('===========================');
 function some(callback) {
   // 여기에 작성
+  let boolValue = false;
+  for (const user of userList) {
+    if(callback(user)) {
+      boolValue = true;
+    }
+  }
 
+  if(boolValue) {
+    return true;
+  } else {
+    return  false;
+  }
 
 }
 
