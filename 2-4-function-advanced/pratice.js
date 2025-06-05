@@ -93,3 +93,32 @@ console.log(result3);
 const result4 = some(user => user.address === '부산'); // false
 console.log(result4);
 
+console.log('===========================');
+
+// 문제 3 none() 함수 만들어보기 (심화)
+// 조건을 만족하는 사용자가 하나도 없으면 true, 있으면 false를 반환하는 none() 함수를 구현하세요.
+
+function none(callback) {
+  // 여기에 작성
+  let boolValue = false;
+  for (const user of userList) {
+    if(!callback(user)) {
+      boolValue = true;
+    }
+    if (callback(user)) {
+      boolValue = false;
+    }
+  }
+
+  return boolValue;
+
+}
+
+// '게임'이라는 취미를 가진 사용자가 없는가?
+const result5 = none(user => user.hobbies.includes('게임')); // true
+console.log(result5);
+
+// 서울에 사는 사용자가 아무도 없는가?
+const result6 = none(user => user.address === '서울'); // false
+console.log(result6);
+
