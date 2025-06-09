@@ -48,3 +48,4 @@ function foo(param) {
 
 foo();
 
+
