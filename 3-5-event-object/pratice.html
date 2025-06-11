@@ -97,8 +97,78 @@
       "https://www.sisajournal.com/news/photo/202108/222572_131065_5150.jpg",
       'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8MXx8fGVufDB8fHx8fA%3D%3D',
       'https://img.wowtv.co.kr/wowtv_news/dnrs/20200922/B20200922173834073.jpg',
+
     ];
 
+    const [$prev, $image, $next] = [...document.getElementById('slider').children];
+
+    const $thumbnails = document.getElementById('thumbnails');
+
+    // 현재 렌더링 된 이미지가 배열에서 몇 번 인덱스의 이미지인지 체크할 변수
+    let currentIndex = 0;
+
+    // 지정된 이미지 주소를 이미지 태그에 넣어주는 함수
+    function insertImageSource(index) {
+      $image.setAttribute('src', images[index]);
+    }
+
+    // 이전 버튼 클릭 이벤트
+    $prev.addEventListener('click', e => {
+
+      // 현재 인덱스 기준으로 1씩 감소 0 -> 2 -> 1 -> 2 -> 1
+      /*currentIndex--;
+        if (currentIndex >= images.length) {
+        // 인덱스 보정
+        if (currentIndex < 0) {
+        currentIndex = images.length - 1;
+        }*/
+
+      currentIndex = (currentIndex - 1 + images.length) % images.length;
+
+      // 실제 이미지 태그에 삽입
+      insertImageSource(currentIndex);
+
+    });
+
+    // 다음 버튼 클릭 이벤트
+    $next.addEventListener('click', e => {
+      // 다음 버튼을 누르면 이미지태그로 src가 이미지 배열의 다음 데이터로 바뀌어야 함
+      // 0번 => 1 -> 2 -> 0 -> 1 -> 2
+
+      // 마지막 인덱스까지만 ++하고 마지막 인덱스에서는 0으로 돌려야함.
+      /*currentIndex++;
+     if (currentIndex >= images.length) {
+       currentIndex = 0;
+     }*/
+      currentIndex = (currentIndex + 1) % images.length;
+
+      // 실제 이미지 태그에 삽입
+      insertImageSource(currentIndex);
+
+    });
+
+    // 이미지 썸네일 이벤트
+    // $thumbnails.addEventListener('click', e => {
+    //
+    //
+    //
+    // });
+
+    // 1. 새 이미지 요소 만들기
+    const $img = document.createElement("img");
+    const $img2 = document.createElement("img");
+
+    // 이미지 속성 결정
+    $img.setAttribute("src", "https://blog.kakaocdn.net/dn/dN4uhe/btr8xWDwbrK/5YjBrelhtJwU2BAcLtEVoK/img.jpg");
+    $img.setAttribute("class", "thumbnail");
+    $img.setAttribute("alt", "");
+    $img2.setAttribute("src", "https://www.sisajournal.com/news/photo/202108/222572_131065_5150.jpg");
+    $img2.setAttribute("class", "thumbnail");
+    $img2.setAttribute("alt", "");
+
+    //  <div id="thumbnails"> 안에 이미지 넣기
+    $thumbnails.appendChild($img);
+    $thumbnails.appendChild($img2);
 
 
   </script>
