@@ -112,6 +112,22 @@
       $image.setAttribute('src', images[index]);
     }
 
+    // 지정된 이미지 주소를 썸네일 슬라이더 태그에 넣어주는 함수
+    function insertThumbnailSlider() {
+      // 동적으로 새 이미지 태그 넣기
+      images.forEach(src => {
+        const $img = document.createElement("img");
+        $img.classList.add("thumbnail");
+        $img.src = src;
+        $img.alt = "";
+
+        $thumbnails.appendChild($img);
+      });
+    }
+
+    // 썸네일 슬라이더에 이미지 추가함수 실행
+    insertThumbnailSlider();
+
     // 이전 버튼 클릭 이벤트
     $prev.addEventListener('click', e => {
 
@@ -147,29 +163,9 @@
 
     });
 
-    // 이미지 썸네일 이벤트
-    // $thumbnails.addEventListener('click', e => {
-    //
-    //
-    //
-    // });
-
-    // 1. 새 이미지 요소 만들기
-    const $img = document.createElement("img");
-    const $img2 = document.createElement("img");
-
-    // 이미지 속성 결정
-    $img.setAttribute("src", "https://blog.kakaocdn.net/dn/dN4uhe/btr8xWDwbrK/5YjBrelhtJwU2BAcLtEVoK/img.jpg");
-    $img.setAttribute("class", "thumbnail");
-    $img.setAttribute("alt", "");
-    $img2.setAttribute("src", "https://www.sisajournal.com/news/photo/202108/222572_131065_5150.jpg");
-    $img2.setAttribute("class", "thumbnail");
-    $img2.setAttribute("alt", "");
-
-    //  <div id="thumbnails"> 안에 이미지 넣기
-    $thumbnails.appendChild($img);
-    $thumbnails.appendChild($img2);
-
+    // 썸네일 슬라이더 클릭 이벤트
+    $thumbnails.addEventListener('click', e => {
+    });
 
   </script>
 
