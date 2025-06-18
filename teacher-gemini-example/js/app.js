@@ -60,26 +60,6 @@ function generatePrompt(items) {
   // AI가 더 좋은 답변을 생성하도록, 역할을 부여하고 명확하게 지시합니다.
   const prompt = `
 당신은 세계 최고의 요리사입니다. 아래의 재료들을 활용해서 만들 수 있는 최고의 요리 레시피를 하나만 추천해주세요.
-
-[사용할 재료]
-${items}
-
-[출력 형식]
-- 요리 이름: (여기에 요리 이름)
-- 한 줄 소개: (여기에 한 줄 소개)
-- 필요한 재료: (재료 목록)
-- 요리 순서: (단계별 요리 순서)
-- 꿀팁: (요리를 더 맛있게 만드는 꿀팁)
-
-형식에 맞춰서 답변해주세요.
-    `;
-  return prompt;
-}
-
-/* 아래와 같이 질문하고 결과를 잘 파싱하면 더 좋게 만들 수 있다.
-
-const prompt = `
-당신은 세계 최고의 요리사입니다. 아래의 재료들을 활용해서 만들 수 있는 최고의 요리 레시피를 하나만 추천해주세요.
 응답은 반드시 아래에 명시된 JSON 형식에 맞춰서, 다른 부가 설명 없이 JSON 데이터만 반환해야 합니다.
 
 [사용할 재료]
@@ -98,8 +78,65 @@ ${items}
   "tip": "요리를 더 맛있게 만드는 꿀팁"
 }
 `;
+  return prompt;
+}
+// app.js 파일에 아래 두 함수를 추가하거나 기존 함수를 교체해주세요.
 
+/**
+ * @description 파싱된 레시피 데이터 객체를 받아서 화면에 동적으로 HTML 요소를 생성합니다.
+ * @param {object} data - 파싱된 레시피 데이터
  */
+function renderRecipe(data) {
+  // 1. 기존 결과 영역을 비웁니다.
+  $recipeOutput.innerHTML = '';
+
+  // 2. 각 데이터에 맞는 HTML 요소를 생성합니다.
+  const $recipeName = document.createElement('h2');
+  $recipeName.textContent = data.recipeName;
+
+  const $introduction = document.createElement('p');
+  $introduction.textContent = data.introduction;
+  $introduction.className = 'introduction'; // (선택) CSS 스타일링을 위한 클래스
+
+  const $ingredientsTitle = document.createElement('h3');
+  $ingredientsTitle.textContent = '필요한 재료';
+
+  const $ingredientsList = document.createElement('ul');
+  data.ingredients.forEach(item => {
+    const $li = document.createElement('li');
+    $li.textContent = item;
+    $ingredientsList.appendChild($li);
+  });
+
+  const $instructionsTitle = document.createElement('h3');
+  $instructionsTitle.textContent = '요리 순서';
+
+  const $instructionsList = document.createElement('ol'); // 순서가 중요하므로 ol 태그 사용
+  data.instructions.forEach(item => {
+    const $li = document.createElement('li');
+    $li.textContent = item;
+    $instructionsList.appendChild($li);
+  });
+
+  const $tipTitle = document.createElement('h3');
+  $tipTitle.textContent = '꿀팁 🍯';
+
+  const $tip = document.createElement('p');
+  $tip.textContent = data.tip;
+
+  // 3. 생성된 모든 요소들을 결과 영역에 추가합니다.
+  $recipeOutput.append(
+    $recipeName,
+    $introduction,
+    $ingredientsTitle,
+    $ingredientsList,
+    $instructionsTitle,
+    $instructionsList,
+    $tipTitle,
+    $tip
+  );
+}
+
 
 /**
  * @description XMLHttpRequest를 사용하여 Gemini API를 호출하고 결과를 처리합니다.
@@ -110,54 +147,63 @@ function getRecipeFromAI() {
     return;
   }
 
-  // 1. 로딩 화면을 보여주고, 이전 결과는 숨깁니다.
   $loading.classList.remove('hidden');
+  $recipeOutput.innerHTML = ''; // ✨ 이전 결과 텍스트를 비워줍니다.
   $recipeOutput.classList.add('hidden');
 
-  // 2. API에 보낼 요청 데이터를 준비합니다.
   const prompt = generatePrompt(ingredients);
-  const payload = {
-    contents: [
-      {
-        parts: [{text: prompt}]
-      }]
-  };
+  const payload = { contents: [{ parts: [{ text: prompt }] }] };
   const requestData = JSON.stringify(payload);
-
-  // 3. XMLHttpRequest 객체 생성 및 설정
   const xhr = new XMLHttpRequest();
   xhr.open('POST', API_URL);
   xhr.setRequestHeader('Content-Type', 'application/json');
 
-  // 4. 요청이 성공적으로 완료되었을 때 실행될 이벤트 핸들러
   xhr.addEventListener('load', e => {
-    // 로딩 화면 숨기기
     $loading.classList.add('hidden');
     $recipeOutput.classList.remove('hidden');
 
     if (xhr.status === 200) {
-      const responseData = JSON.parse(xhr.responseText);
-      // Gemini API 응답 구조에 따라 텍스트를 추출합니다.
-      const recipeText = responseData.candidates[0].content.parts[0].text;
-      $recipeOutput.textContent = recipeText;
+      try {
+        const responseData = JSON.parse(xhr.responseText);
+        let recipeJsonString = responseData.candidates[0].content.parts[0].text;
+
+        // ✨ ========================================================== ✨
+        // ✨ 여기가 바로 새로 추가된 '데이터 클리닝' 핵심 로직입니다! ✨
+        // ✨ ========================================================== ✨
+        // 만약 응답이 마크다운 코드 블록(```)으로 감싸져 있다면,
+        // 순수한 JSON 부분만 추출합니다.
+        if (recipeJsonString.startsWith('```')) {
+          console.log('마크다운 형식 감지! JSON 추출을 시작합니다.');
+          // 첫 번째 '{' 와 마지막 '}' 사이의 문자열만 잘라냅니다.
+          const startIndex = recipeJsonString.indexOf('{');
+          const endIndex = recipeJsonString.lastIndexOf('}');
+          recipeJsonString = recipeJsonString.substring(startIndex, endIndex + 1);
+        }
+
+        // 이제 청소된 문자열을 파싱합니다.
+        const recipeData = JSON.parse(recipeJsonString);
+
+        // 렌더링 함수에 깨끗한 객체를 전달하여 화면을 그립니다.
+        renderRecipe(recipeData);
+
+      } catch (error) {
+        // AI가 유효하지 않은 JSON을 보냈을 경우의 에러 처리
+        console.error('JSON Parsing Error:', error);
+        $recipeOutput.textContent = '레시피 형식을 분석하는 데 실패했습니다. 다른 재료로 시도해보세요.';
+      }
     } else {
-      // API 에러 처리
       console.error('API Error:', xhr.status, xhr.responseText);
       $recipeOutput.textContent = '레시피를 가져오는 데 실패했습니다. 잠시 후 다시 시도해주세요.';
     }
   });
 
-  // 5. 네트워크 에러 등 요청 자체가 실패했을 때 실행될 이벤트 핸들러
   xhr.addEventListener('error', e => {
     $loading.classList.add('hidden');
     $recipeOutput.textContent = '네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요.';
   });
 
-  // 6. 준비된 요청을 서버로 전송합니다.
   xhr.send(requestData);
 }
-
-
 // ========== 이벤트 리스너 설정 ========== //
 
 // 재료 입력 폼 제출 이벤트
