@@ -20,6 +20,11 @@ const $chancesLeft = document.getElementById('chances-left');
 const $feedback = document.getElementById('feedback');
 const $historyList = document.getElementById('history-list');
 
+// 힌트 버튼 추가
+const $hintBtn = document.getElementById('hint-button');
+// 포기 버튼 추가
+const $giveUpBtn = document.getElementById('give-up-button');
+
 const $finishModal = document.getElementById('finish-modal');
 const $finishTitle = document.getElementById('finish-title');
 const $finishText = document.getElementById('finish-text');
@@ -38,10 +43,6 @@ function updateFeedback(feedbackText, feedbackClass) {
 // 1. 업다운 정답 판정 로직
 function judgeGuess() {
   const { secretNumber, userAnswer } = gameData;
-
-
-
-
 
   // 값 비교
   // 정답인 경우
@@ -77,6 +78,7 @@ function judgeGuess() {
       resultClass: result.toLowerCase()
     });
 
+
     // 자동 정답인 경우
     if (
       gameData.minRange === gameData.maxRange
@@ -91,14 +93,33 @@ function judgeGuess() {
       showFinishModal(false);
     }
 
+
     // 모든 판정이 끝난 후 UI 업데이트
     updateUI();
   }
 
 }
 
+// 정답에 어느정도 가까워졌는지를 바디 배경색으로 표현
+function changeBodyHint() {
+  //                             50                  60
+  const diff = Math.abs(gameData.secretNumber - gameData.userAnswer);
+
+  if (diff <= 10) {
+    document.body.style.background = '#f99696';
+  } else if (diff <= 20) {
+    document.body.style.background = '#89b9ff';
+  } else {
+    document.body.style.background = '#e9ecef';
+  }
+}
+
 // 2. UI 업데이트 로직
 function updateUI() {
+
+  // 바디의 배경색 변경
+  changeBodyHint();
+
   // 범위값 리렌더링
   $begin.textContent = gameData.minRange;
   $end.textContent = gameData.maxRange;
@@ -154,6 +175,7 @@ function initializeGame() {
   gameData.minRange = 1;
   gameData.maxRange = 100;
   gameData.guessHistory = [];
+  gameData.userAnswer = null;
 
   console.log(`정답: ${gameData.secretNumber}`);
 
@@ -203,6 +225,25 @@ $guessForm.addEventListener('submit', e => {
 // 2. 게임 재시작 이벤트
 $restartBtn.addEventListener('click', e => {
   initializeGame();
+});
+
+// 3. 힌트 버튼 이벤트
+$hintBtn.addEventListener('click', e => {
+  if (gameData.remainingChanges < 2) {
+    alert('기회가 부족하여 힌트를 사용할 수 없습니다!');
+    return;
+  }
+
+  gameData.remainingChanges--;
+
+  const hint = gameData.secretNumber % 2 === 0 ? '짝수' : '홀수';
+  updateFeedback(`힌트: 정답은 ${hint}입니다. (기회 1회 차감)`, '');
+  updateUI();
+});
+
+// 4. 포기 버튼 이벤트
+$giveUpBtn.addEventListener('click', e => {
+  showFinishModal(false);
 });
 
 // ==== 실행 코드 ==== //
