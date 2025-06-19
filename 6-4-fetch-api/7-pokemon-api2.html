@@ -278,9 +278,6 @@
 
           $pokeContainer.append($div);
 
-          // observer 감시 명령
-          observer.observe($pokeContainer.lastElementChild);
-
         }
 
         // 로딩바 숨기기
@@ -294,6 +291,16 @@
     function loadMoreContent() {
       // 로딩 중... 활성화
       $loading.style.display = 'block';
+
+      // offset과 limit를 조절
+      offset += limit;
+      if (offset > pokeCount) {
+        $pokeContainer.textContent = '다음 데이터가 없습니다.';
+        return;
+      }
+      getPokemon();
+
+
     }
 
     // 무한스크롤을 위한 Observer 설정
@@ -351,6 +358,8 @@
     // 초기 실행
     getPokemon();
 
+    // observer 감시 명령
+    observer.observe($pokeContainer.lastElementChild);
 
   </script>
 </body>
